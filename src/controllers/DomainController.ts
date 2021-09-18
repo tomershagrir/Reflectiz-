@@ -39,7 +39,8 @@ class DomainController {
             }
             else {
 
-                foundDomain.updateOne({ status: domainStatus.onAnalysis, updatedAt: new Date() });
+                await foundDomain.updateOne({ status: domainStatus.onAnalysis, updatedAt: new Date() });
+                foundDomain.save();
 
                 RedisPublisherService.sendToAnalysis(foundDomain.domain);
 
