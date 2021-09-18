@@ -1,6 +1,7 @@
 import Domain from "../models/Domain";
 import { Request, Response } from 'express';
 import RedisPublisherService from "../services/RedisPublisherService";
+import { domainStatus } from "../interfaces/domainData";
 
 
 class DomainController {
@@ -16,7 +17,7 @@ class DomainController {
         else {
             const newDomain = new Domain({
                 domain: domainName,
-                status: "onAnalysis",
+                status: domainStatus.onAnalysis,
                 updatedAt: new Date()
             });
             const domain = await newDomain.save();
@@ -33,12 +34,12 @@ class DomainController {
 
         if (foundDomain) {
 
-            if (foundDomain.status === "onAnalysis") {
+            if (foundDomain.status === domainStatus.onAnalysis) {
                 res.status(200).send(`The domain name ${domainName} is alrady on analysis`);
             }
             else {
 
-                foundDomain.updateOne({ status: "onAnalysis", updatedAt: new Date() });
+                foundDomain.updateOne({ status: domainStatus.onAnalysis, updatedAt: new Date() });
 
                 RedisPublisherService.sendToAnalysis(foundDomain.domain);
 

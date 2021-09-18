@@ -4,6 +4,7 @@ import Domain from "../models/Domain";
 import { CronJob } from 'cron';
 import moment from "moment";
 import RedisPublisherService from "./RedisPublisherService";
+import { domainStatus } from "../interfaces/domainData";
 
 const timeSpanToUpdate: number = 60 * 1000 * 2; //Defined in the task as the time the record needs to updates. Specified 1 month. But for the sake of the exercise it is set to 2 minutes.
 
@@ -29,7 +30,7 @@ class Scheduler {
     public async runSchedulerJob(): Promise<void> {
         const rows = await Domain.find();
 
-        const rowsNeedToBeUpdated = rows.filter(row => row.status !== "onAnalysis" && moment().valueOf() - moment(row.updatedAt).valueOf() > timeSpanToUpdate);
+        const rowsNeedToBeUpdated = rows.filter(row => row.status !== domainStatus.onAnalysis && moment().valueOf() - moment(row.updatedAt).valueOf() > timeSpanToUpdate);
 
 
         console.log(`Scheduler found ${rowsNeedToBeUpdated.length} rows and ends them to analysis`)
