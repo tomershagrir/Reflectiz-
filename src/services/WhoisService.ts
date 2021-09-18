@@ -7,6 +7,7 @@ class WhoisService {
 
         console.log(`WhoisService is now processing analysis for domain: ${domain}`);
 
+        console.log('Using Mock data');
         Domain.updateOne({ domain: domain }, {
             status: "done", updatedAt: new Date(),
             WhoisData: {
