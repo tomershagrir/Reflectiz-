@@ -4,7 +4,8 @@ import { WhoisData } from "./WhoisData";
 
 export const domainStatus = {
     onAnalysis: 'onAnalysis',
-    done: 'done'
+    done: 'done',
+    error: 'error'
 }
 
 export interface DomainData extends Document{

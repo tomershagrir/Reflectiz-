@@ -1,6 +1,12 @@
-import e from "express";
 import { domainStatus } from "../interfaces/domainData";
 import Domain from "../models/Domain";
+import axios from "axios";
+
+import xml2js from 'xml2js';
+
+const parser = new xml2js.Parser();
+const whoIsApiKey = 'at_cVLZhMzYLOxWMaJM9xIZrpox6eXvA';
+const whoIsUrl='https://www.whoisxmlapi.com/whoisserver/WhoisService';
 
 
 class WhoisService {
@@ -9,32 +15,42 @@ class WhoisService {
 
         console.log(`WhoisService is now processing analysis for domain: ${domain}`);
 
+        const foundDomain = await Domain.findOne({ domain: domain })
 
-        //In reality it should get the data from the service datasource but here I used mock data to simulate
-        setTimeout(async () => {
-            console.log('Using Mock data');
+        if (foundDomain) {
 
-            const foundDomain = await Domain.findOne({ domain: domain })
+            try {
+                const response = await axios.get(`${whoIsUrl}?apiKey=${whoIsApiKey}&domainName=${domain}`);
 
-            if (foundDomain) {
+                console.log("Requesting fata from Whois")
+                const jsonResponse = await parser.parseStringPromise(response.data);
+                console.log("done fetching data from who is")
+
                 await foundDomain.updateOne({
                     status: domainStatus.done, updatedAt: new Date(),
                     WhoisData: {
-                        dateCreated: "09.15.97",
-                        ownerName: "MarkMonitor, Inc.",
-                        expiredOn: "09.13.28"
+                        dateCreated: jsonResponse.WhoisRecord.createdDate[0],
+                        ownerName: jsonResponse.WhoisRecord.registrarName[0],
+                        expiredOn: jsonResponse.WhoisRecord.expiresDate[0]
                     }
                 });
-
-                foundDomain.save();
-
-                console.log(`WhoisService is done processing analysis for domain: ${domain}`);
             }
-            else{
-                console.error(`domain: ${domain} not found`);
+            catch(ex){
+                console.error('Whois service failed to fetch and store data', ex)
+                
+                await foundDomain.updateOne({
+                    status: domainStatus.error, updatedAt: new Date(),
+                });
             }
 
-        }, 10 * 1000);
+            foundDomain.save();
+
+            console.log(`WhoisService is done processing analysis for domain: ${domain}`);
+        }
+        else {
+            console.error(`domain: ${domain} not found`);
+        }
+
     }
 }
 

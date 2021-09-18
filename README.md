@@ -25,6 +25,7 @@ note: repo also includes a diagram for the services architecture: architecture.b
 
 Testing:
 The app should run at localhost port 3000
+*Note: VT Service uses Mock data
 
 HTTP GET :
 url: localhost:3000/api/domains?domain=www.google.com
