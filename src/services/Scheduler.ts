@@ -13,7 +13,7 @@ class Scheduler {
     cronJob: CronJob;
 
     constructor() {
-        this.cronJob = new CronJob('* * * * * ', async () => {
+        this.cronJob = new CronJob('* * * * * ', async () => { //every minute
             try {
                 await this.runSchedulerJob();
             } catch (e) {
