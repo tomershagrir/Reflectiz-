@@ -43,8 +43,9 @@ class WhoisService {
                     status: domainStatus.error, updatedAt: new Date(),
                 });
             }
-
-            foundDomain.save();
+            finally {
+                foundDomain.save();
+            }
 
             console.log(`WhoisService is done processing analysis for domain: ${domain}`);
         }
