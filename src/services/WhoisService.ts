@@ -4,9 +4,9 @@ import axios from "axios";
 
 import xml2js from 'xml2js';
 
+const config = require('../config.env');
+
 const parser = new xml2js.Parser();
-const whoIsApiKey = 'at_cVLZhMzYLOxWMaJM9xIZrpox6eXvA';
-const whoIsUrl='https://www.whoisxmlapi.com/whoisserver/WhoisService';
 
 
 class WhoisService {
@@ -20,7 +20,8 @@ class WhoisService {
         if (foundDomain) {
 
             try {
-                const response = await axios.get(`${whoIsUrl}?apiKey=${whoIsApiKey}&domainName=${domain}`);
+
+                const response = await axios.get(`${config.whoIsUrl}?apiKey=${config.whoIsApiKey}&domainName=${domain}`);
 
                 console.log("Requesting data from Whois")
                 const jsonResponse = await parser.parseStringPromise(response.data);
@@ -35,9 +36,9 @@ class WhoisService {
                     }
                 });
             }
-            catch(ex){
+            catch (ex) {
                 console.error('Whois service failed to fetch and store data', ex)
-                
+
                 await foundDomain.updateOne({
                     status: domainStatus.error, updatedAt: new Date(),
                 });
