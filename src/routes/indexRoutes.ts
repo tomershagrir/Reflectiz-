@@ -9,7 +9,7 @@ class IndexRoutes {
     }
 
     public getIndex(req: Request, res: Response): void {
-        res.json('Api: /api/posts');
+        res.json('Api: /api/domains');
     }
 
     routes(): void {
