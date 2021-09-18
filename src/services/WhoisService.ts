@@ -22,7 +22,7 @@ class WhoisService {
             try {
                 const response = await axios.get(`${whoIsUrl}?apiKey=${whoIsApiKey}&domainName=${domain}`);
 
-                console.log("Requesting fata from Whois")
+                console.log("Requesting data from Whois")
                 const jsonResponse = await parser.parseStringPromise(response.data);
                 console.log("done fetching data from who is")
 
