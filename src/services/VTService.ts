@@ -1,3 +1,4 @@
+import { domainStatus } from "../interfaces/domainData";
 import Domain from "../models/Domain";
 
 
@@ -13,7 +14,7 @@ class VTService {
 
         console.log('Using Mock data');
         Domain.updateOne({ domain: domain }, {
-            status: "done", updatedAt: new Date(),
+            status: domainStatus.done, updatedAt: new Date(),
             VTData: {
                 detectedEngines: "CLEAN MX",
                 numberOfDetection: 1,
